@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CSS Variables And Vanilla JS</title>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+        type="text/css"
+        href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+</head>
+    <body>
+        <canvas id="draw" width="800" height="800"></canvas>
+        <script>
+            const canvas = document.querySelector('#draw');
+            const ctx = canvas.getContext('2d'); //we draw on context
+
+            canvas.width= window.innerWidth;
+            canvas.height= window.innerHeight;
+
+            ctx.strokeStyle='#BADA55'; 
+            ctx.lineJoin= 'round';
+            ctx.lineCap ='round';
+            ctx.lineWidth = "100";
+            //ctx.globalCompositeOperation = 'multiply';
+
+            let isDrawing = false; //determining if it draws on going up or down
+
+            let lastX = 0;//staring and ending point of drawing 
+            let lastY = 0; //staring and ending point of drawing 
+            let hue = 0;
+
+            function draw (e) {
+                if(!isDrawing) return //stop the fn from running when they are not moused down
+    
+                
+                ctx.strokeStyle =`hsl(${hue}, 100%, 50%)`;
+                //STARTING UP OUR LINE:
+                ctx.beginPath();
+                //start from 
+                ctx.moveTo(lastX, lastY);
+                //go to 
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke(); //callins stroke makes it visible
+                //so that we start not form x0 but form where we have finished:
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+                hue++;
+            }
+
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing=true;
+                [lastX, lastY] = [e.offsetX, e.offsetY]; //so we can start painting at different locations every mouse move ( mouse down is when you press the mouse button)
+
+            });
+            canvas.addEventListener('mouseup', () => isDrawing=false);
+            canvas.addEventListener('mouseout', () => isDrawing=false);
+
+        </script>
+        <style>
+            html, body {
+                margin: 0;
+            }
+        </style>
+    </body>
+</html>
